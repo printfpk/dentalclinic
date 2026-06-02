@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  /* Lume Dental Colors (for the rest of the pages) */
+  --color-lume-black: #131c15;
+  --color-lume-cyan: #bb4413;
+  --color-lume-gray: #f4f5f7;
+  --color-lume-white: #ffffff;
+
+  /* Denta Colors (specifically for the Hero section) */
+  --color-denta-orange: #c84b16;
+  --color-denta-orange-dark: #a63d10;
+  --color-denta-white: #ffffff;
+  --color-denta-black: #111111;
+  
+  --font-sans: "Inter", "sans-serif";
+  --font-display: "Inter", "sans-serif";
+}
+
+@layer base {
+  body {
+    @apply antialiased text-lume-black bg-lume-white font-sans overflow-x-hidden;
+    min-height: 100vh;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium border border-white/30 rounded-none text-white hover:bg-white hover:text-denta-orange transition-colors duration-300;
+  }
+}
