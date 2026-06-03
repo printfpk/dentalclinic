@@ -52,26 +52,30 @@ const Doctors = () => {
         }
       );
 
+      const isMobile = window.innerWidth < 768;
+
       // 2. Cinematic scrub timeline
       const tlScrub = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=250%",
-          pin: true,
-          scrub: 1,
+          end: isMobile ? "+=100%" : "+=250%",
+          pin: !isMobile,
+          scrub: isMobile ? 0.3 : 1,
         }
       });
 
+      const validCards = cardsRef.current.filter(Boolean);
+
       tlScrub.fromTo(outlineRef.current,
-        { x: "5%", opacity: 0 },
-        { x: "-5%", opacity: 0.15, duration: 2, ease: "none" }
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 0.1, duration: 2, ease: "power2.out" }
       )
-        .fromTo(cardsRef.current,
-          { opacity: 0, y: 150, scale: 0.8, rotateX: 15, transformPerspective: 1000 },
-          { opacity: 1, y: 0, scale: 1, rotateX: 0, duration: 2, stagger: 1.2, ease: "power3.out" },
-          "-=1.5"
-        )
+      .fromTo(validCards,
+        { opacity: 0, y: isMobile ? 40 : 150, scale: isMobile ? 0.95 : 0.8, rotateX: isMobile ? 0 : 15, transformPerspective: 1000 },
+        { opacity: 1, y: 0, scale: 1, rotateX: 0, duration: 2, stagger: isMobile ? 0.5 : 1.2, ease: "power3.out" },
+        "-=1.5"
+      )
         .fromTo(expertsRef.current,
           { opacity: 0, scale: 1 },
           { opacity: 0.08, scale: 7, duration: 4, ease: "power2.inOut" },
@@ -111,7 +115,7 @@ const Doctors = () => {
               Our Doctors
             </div>
 
-            <h2 className="relative z-10 text-[3.5rem] leading-tight font-display font-bold text-white tracking-tight mb-8">
+            <h2 className="relative z-10 text-[clamp(40px,8vw,56px)] leading-tight font-display font-bold text-white tracking-tight mb-8">
               Dental Experts<br />You Can Trust
             </h2>
 

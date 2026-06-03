@@ -46,24 +46,28 @@ const About = () => {
         }
       );
 
-      // 2. Cinematic scrub timeline
+      const isMobile = window.innerWidth < 768;
+
+      // 2. Cinematic scrub timeline (Awwwards Typography Moment)
       const tlScrub = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=250%",
-          pin: true,
-          scrub: 1,
+          end: isMobile ? "+=100%" : "+=250%",
+          pin: !isMobile,
+          scrub: isMobile ? 0.3 : 1,
         }
       });
+
+      const validCards = cardsRef.current.filter(Boolean);
 
       tlScrub.fromTo(outlineRef.current,
         { scale: 0.8, opacity: 0 },
         { scale: 1, opacity: 0.15, duration: 2, ease: "power2.out" }
       )
-      .fromTo(cardsRef.current,
-        { opacity: 0, y: 80, scale: 0.9, rotateZ: 2 },
-        { opacity: 1, y: 0, scale: 1, rotateZ: 0, duration: 2, stagger: 0.5, ease: "power3.out" },
+      .fromTo(validCards,
+        { opacity: 0, y: isMobile ? 40 : 80, scale: isMobile ? 0.95 : 0.8 },
+        { opacity: 1, y: 0, scale: 1, duration: 2, stagger: isMobile ? 0.2 : 0.5, ease: "power3.out" },
         "-=0.5"
       )
       .fromTo(trustRef.current,
@@ -108,7 +112,7 @@ const About = () => {
             <div className="relative w-full overflow-hidden pb-2">
               <h2 
                 ref={el => titleLinesRef.current[0] = el}
-                className="relative z-10 text-[3.5rem] leading-tight font-display font-bold text-white tracking-tight"
+                className="relative z-10 text-[clamp(40px,8vw,56px)] leading-tight font-display font-bold text-white tracking-tight"
               >
                 About Lume Dental Clinic
               </h2>

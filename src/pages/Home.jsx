@@ -15,6 +15,15 @@ import ToothCanvas from '../components/ToothCanvas';
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
+  useEffect(() => {
+    // Set the body background to match the hero section while on the Home page 
+    // to prevent white flashes when GSAP pins elements.
+    document.body.style.backgroundColor = '#bb4413';
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
+  }, []);
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -50,17 +59,17 @@ const Home = () => {
         }
       });
 
-      // We start at brand orange #bb4413
+      // We start at brand orange radial gradient
       // Hero -> Services: darken slightly
-      tl.to(containerRef.current, { backgroundColor: "#99330c", ease: "none", duration: 1 });
+      tl.to(containerRef.current, { background: "#99330c", ease: "none", duration: 1 });
       // Services -> About: darken more
-      tl.to(containerRef.current, { backgroundColor: "#662005", ease: "none", duration: 1 });
+      tl.to(containerRef.current, { background: "#662005", ease: "none", duration: 1 });
       // About -> Doctors: dark with orange tint
-      tl.to(containerRef.current, { backgroundColor: "#331002", ease: "none", duration: 1 });
+      tl.to(containerRef.current, { background: "#331002", ease: "none", duration: 1 });
       // Doctors -> Testimonials: deep dark
-      tl.to(containerRef.current, { backgroundColor: "#110500", ease: "none", duration: 1 });
+      tl.to(containerRef.current, { background: "#110500", ease: "none", duration: 1 });
       // Testimonials -> CTA: return to rich orange glow
-      tl.to(containerRef.current, { backgroundColor: "#bb4413", ease: "none", duration: 1 });
+      tl.to(containerRef.current, { background: "#bb4413", ease: "none", duration: 1 });
 
       // Refresh ScrollTrigger to ensure correct heights
       setTimeout(() => {
@@ -82,11 +91,8 @@ const Home = () => {
       ref={containerRef}
       id="home-scroll-container" 
       className="relative w-full min-h-screen text-white transition-colors duration-1000 ease-out"
-      style={{ backgroundColor: '#bb4413' }} // Initial brand color
+      style={{ background: 'radial-gradient(circle at 70% 30%, #e85d1c 0%, #a83200 45%, #2a0a00 100%)' }}
     >
-      {/* Global 3D Tooth Canvas */}
-      <ToothCanvas />
-
       {/* Content wrapper */}
       <div className="relative z-10 w-full max-w-[1800px] mx-auto px-4 md:px-8">
         <Navbar />
@@ -103,6 +109,9 @@ const Home = () => {
           </div>
         </main>
       </div>
+
+      {/* Global 3D Tooth Canvas (Placed AFTER content wrapper so it can be z-index 20 on top of text) */}
+      <ToothCanvas />
     </div>
   );
 };
