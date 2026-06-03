@@ -32,4 +32,11 @@
   .btn-outline {
     @apply inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium border border-white/30 rounded-none text-white hover:bg-white hover:text-denta-orange transition-colors duration-300;
   }
+  
+  .text-outline {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+    color: transparent;
+  }
 }
+
+

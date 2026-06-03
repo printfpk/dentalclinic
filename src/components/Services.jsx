@@ -1,131 +1,255 @@
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const AnimatedCheck = ({ delay }) => {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-3 flex-shrink-0 text-lume-black/50 group-hover:text-[#c84b16] transition-colors duration-300">
-      {/* Box */}
-      <rect 
-        x="3" y="3" width="18" height="18" rx="4" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-      />
-      {/* Animated Checkmark Path */}
-      <motion.path
-        d="M8 12L11 15L16 9"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        variants={{
-          rest: { pathLength: 0, opacity: 0, transition: { duration: 0.1 } },
-          hover: { pathLength: 1, opacity: 1, transition: { duration: 0.4, ease: "easeOut", delay } }
-        }}
-      />
-    </svg>
-  );
-};
-
-const ServiceCard = ({ icon, title, features, link }) => {
-  const navigate = useNavigate();
-
-  return (
-    <motion.div 
-      initial="rest"
-      whileHover="hover"
-      animate="rest"
-      onClick={() => link ? navigate(link) : null}
-      className="border border-black/10 bg-white rounded-[2rem] p-4 flex flex-col justify-between group cursor-pointer transition-all duration-300 hover:border-black/20 hover:shadow-xl"
-    >
-      <div className="bg-[#f5f5f7] rounded-[1.5rem] h-48 mb-6 flex items-center justify-center overflow-hidden">
-        <div className="text-[4rem] group-hover:scale-110 transition-transform duration-500 ease-out">{icon}</div>
-      </div>
-      <div className="px-2">
-        <h3 className="text-xl font-semibold mb-6 text-lume-black">{title}</h3>
-        <ul className="space-y-3 mb-8">
-          {features.map((feature, idx) => (
-            <li key={idx} className="flex items-center text-sm font-medium text-lume-black/70 group-hover:text-lume-black transition-colors duration-300">
-              <AnimatedCheck delay={idx * 0.3} />
-              {feature}
-            </li>
-          ))}
-        </ul>
-        <button 
-          onClick={() => link ? navigate(link) : null}
-          className="w-full py-3.5 bg-white border border-black/10 hover:border-[#c84b16] hover:bg-[#c84b16] hover:text-white rounded-full flex items-center justify-center gap-2 text-sm font-semibold transition-all duration-300 group/btn"
-        >
-          Explore more
-          <div className="w-6 h-6 bg-lume-black group-hover/btn:bg-white group-hover/btn:text-[#c84b16] rounded-full flex items-center justify-center text-white ml-2 transition-colors duration-300">
-            <ArrowRight className="w-3 h-3" />
-          </div>
-        </button>
-      </div>
-    </motion.div>
-  );
-};
+gsap.registerPlugin(ScrollTrigger);
 
 const Services = () => {
-  const servicesData = [
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+  const navigate = useNavigate();
+
+  const services = [
     {
-      icon: "🦷",
-      title: "General Dentistry",
-      features: ["Routine Check-ups", "Professional Cleanings", "X-Rays & Exams"],
+      id: "general",
+      outline: "GENERAL",
+      titleWord1: "General",
+      titleWord2: "Dentistry",
+      subtitle: "COMPREHENSIVE EXAMS. PREVENTATIVE CARE.",
+      desc: "From thorough examinations to advanced cleanings, we safeguard your dental health with uncompromising precision.",
+      image: "https://ik.imagekit.io/printf/my-post/ChatGPT%20Image%20Jun%203,%202026,%2004_42_02%20PM.png",
+      icons: ["Checkups", "Cleanings", "Prevention"],
       link: "/services/general-dentistry"
     },
     {
-      icon: "✨",
-      title: "Cosmetic Dentistry",
-      features: ["Teeth Whitening", "Veneers", "Smile Makeovers"],
+      id: "cosmetic",
+      outline: "COSMETIC",
+      titleWord1: "Cosmetic",
+      titleWord2: "Dentistry",
+      subtitle: "ENHANCE YOUR SMILE. ELEVATE CONFIDENCE.",
+      desc: "From veneers and whitening to complete smile makeovers, we create natural, beautiful results that last.",
+      image: "https://ik.imagekit.io/printf/my-post/ChatGPT%20Image%20Jun%203,%202026,%2004_46_24%20PM.png",
+      icons: ["Veneers", "Whitening", "Makeovers"],
       link: "/services/cosmetic-dentistry"
     },
     {
-      icon: "⚙️",
-      title: "Implants & Prosthetics",
-      features: ["Dental Implants", "Dentures", "Bridges"],
+      id: "implants",
+      outline: "IMPLANTS",
+      titleWord1: "Implants &",
+      titleWord2: "Prosthetics",
+      subtitle: "PERMANENT. NATURAL-LOOKING.",
+      desc: "State-of-the-art permanent solutions for missing teeth, expertly engineered to restore flawless function and aesthetics.",
+      image: "https://ik.imagekit.io/printf/my-post/ChatGPT%20Image%20Jun%203,%202026,%2004_48_03%20PM.png",
+      icons: ["Implants", "Crowns", "Bridges"],
       link: "/services/implants-prosthetics"
     },
     {
-      icon: "🔧",
-      title: "Restorative",
-      features: ["Fillings", "Crowns", "Root Canals"],
+      id: "restorative",
+      outline: "RESTORATION",
+      titleWord1: "Restorative",
+      titleWord2: "Care",
+      subtitle: "ADVANCED STRUCTURAL REPAIR.",
+      desc: "Meticulous restorative procedures utilizing premium materials to rebuild your smile with enduring strength.",
+      image: "https://ik.imagekit.io/printf/my-post/ChatGPT%20Image%20Jun%203,%202026,%2004_50_21%20PM.png",
+      icons: ["Fillings", "Root Canals", "Extractions"],
       link: "/services/restorative-dentistry"
     }
   ];
 
-  return (
-    <section id="services" className="px-8 py-16 bg-white max-w-[1600px] mx-auto rounded-[3rem] mt-24">
-      {/* Top Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
-        <div>
-          <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-black/10 text-xs font-semibold tracking-wide uppercase text-lume-black/60 mb-6">
-            Our Services
-          </div>
-          <h2 className="text-[3.5rem] leading-tight font-display font-semibold text-lume-black tracking-tight max-w-[500px]">
-            Dental Services for Every Need
-          </h2>
-        </div>
-        <div className="max-w-[400px]">
-          <p className="text-lume-black/80 font-medium mb-6">
-            From preventive care to advanced cosmetic and restorative treatments, we provide a full range of dental services tailored to your needs.
-          </p>
-          <button className="bg-lume-black text-white rounded-full font-medium text-sm px-6 py-3 hover:bg-black/80 transition-colors">
-            Explore All Services
-          </button>
-        </div>
-      </div>
+  useEffect(() => {
+    let ctx = gsap.context(() => {
+      const panels = gsap.utils.toArray('.service-panel');
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=400%", // 4 panels * 100vh scrub space
+          pin: true,
+          scrub: 1,
+          id: "services-scrub" 
+        }
+      });
 
-      {/* Services Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {servicesData.map((service, idx) => (
-          <ServiceCard 
-            key={idx}
-            icon={service.icon}
-            title={service.title}
-            features={service.features}
-            link={service.link}
-          />
+      panels.forEach((panel, i) => {
+        if (i === 0) return; // First panel is visible initially
+
+        const prevPanel = panels[i - 1];
+        
+        // Prev panel fades out and slides up
+        tl.to(prevPanel, {
+          y: -150,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.inOut"
+        }, i * 2);
+
+        // At the exact end of fade out, send to back and disable pointer events
+        tl.set(prevPanel, { pointerEvents: "none", zIndex: 10 }, i * 2 + 1);
+
+        // Setup starting states for incoming panel
+        gsap.set(panel, { opacity: 0, y: 120 }); 
+        const img = panel.querySelector('.service-image-container');
+        gsap.set(img, { clipPath: 'inset(100% 0 0 0)' });
+        
+        const outline = panel.querySelector('.service-outline');
+        gsap.set(outline, { opacity: 0 });
+
+        const heading = panel.querySelector('.service-heading');
+        gsap.set(heading, { y: 60, opacity: 0 });
+
+        const desc = panel.querySelector('.service-desc');
+        const icons = panel.querySelectorAll('.service-icon');
+        gsap.set([desc, icons], { opacity: 0, y: 30 });
+
+        // At the exact start of fade in, bring to front and enable pointer events
+        tl.set(panel, { pointerEvents: "auto", zIndex: 50 }, i * 2);
+
+        // Incoming panel animation sequence
+        tl.to(panel, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out"
+        }, i * 2);
+
+        tl.to(img, {
+          clipPath: 'inset(0% 0% 0% 0%)',
+          duration: 1.2,
+          ease: "power3.inOut"
+        }, i * 2 + 0.2);
+
+        tl.to(outline, {
+          opacity: 0.08,
+          duration: 1,
+          ease: "power2.out"
+        }, i * 2 + 0.5);
+
+        tl.to(heading, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out"
+        }, i * 2 + 0.6);
+
+        tl.to(desc, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out"
+        }, i * 2 + 0.8);
+
+        tl.to(icons, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out"
+        }, i * 2 + 0.9);
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} id="services" className="w-full h-screen relative bg-transparent overflow-hidden">
+      <div ref={containerRef} className="absolute inset-0 w-full h-full">
+        {services.map((service, idx) => (
+          <div 
+            key={service.id} 
+            className={`service-panel absolute inset-0 w-full h-full flex items-center justify-center ${idx === 0 ? 'z-50 pointer-events-auto' : 'z-10 pointer-events-none'}`}
+          >
+            {/* Outline Background Text */}
+            <div className="service-outline absolute top-[10%] left-1/2 -translate-x-1/2 text-[22vw] font-display font-bold whitespace-nowrap z-0 tracking-tighter"
+                 style={{ 
+                   WebkitTextStroke: '1px rgba(255,255,255,0.08)', 
+                   color: 'transparent',
+                   opacity: idx === 0 ? 0.08 : 0 
+                 }}>
+              {service.outline}
+            </div>
+
+            {/* Layout Grid (Clickable) */}
+            <div 
+              className="w-full h-full max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 px-6 lg:px-16 pt-32 pb-16 relative z-10 items-center cursor-pointer"
+              onClick={() => service.link ? navigate(service.link) : null}
+            >
+              
+              {/* Left Side: Editorial Image (Hover Group) */}
+              <div className="relative w-full h-[55vh] lg:h-[75vh] flex flex-col justify-end group">
+                <div 
+                  className="service-image-container absolute inset-0 w-full h-full overflow-hidden rounded-xl shadow-[0_40px_120px_rgba(0,0,0,0.35)]"
+                  style={{ clipPath: idx === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0 0 0)' }}
+                >
+                  <img 
+                    src={service.image} 
+                    alt={service.titleWord1}
+                    className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+                    style={{ filter: 'brightness(.75) contrast(1.1) saturate(.9)' }}
+                  />
+                  {/* Glass overlay on image instead of solid black */}
+                  <div className="absolute inset-0" style={{ 
+                    background: 'linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35))'
+                  }}></div>
+                </div>
+
+                {/* Arrow Button */}
+                <div className="absolute bottom-6 right-6 lg:bottom-10 lg:right-10 z-20">
+                  <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-md bg-black/10 group-hover:bg-[#f5f1eb] group-hover:border-[#f5f1eb] transition-all duration-500 shadow-lg">
+                     <span className="inline-block text-[#f5f1eb] group-hover:text-black text-xl font-light tracking-tighter leading-none transition-all duration-300 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:scale-110">↗</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side: Typography and Details */}
+              <div className="flex flex-col justify-center h-full relative z-10 pt-8 lg:pt-0">
+                
+                {/* Radial Spotlight Depth (Rule 7) */}
+                <div className="absolute inset-0 -mx-16 -my-16 -z-10 pointer-events-none" 
+                     style={{ background: 'radial-gradient(circle at center, rgba(0,0,0,.15), transparent 70%)' }}></div>
+
+                {/* Dark Glass Content Panel (Rule 2) */}
+                <div className="relative p-8 lg:p-12 rounded-[2.5rem] bg-[rgba(0,0,0,0.18)] backdrop-blur-[12px] border border-[rgba(255,255,255,0.08)] shadow-2xl">
+                  
+                  {/* Heading (Rule 1 & 6) */}
+                  <h2 className="service-heading text-[clamp(45px,7vw,110px)] font-display font-light leading-[0.95] tracking-[-0.02em] mb-10 drop-shadow-2xl">
+                    <span className="block text-[#f5f1eb]">{service.titleWord1}</span>
+                    <span className="block text-[#f4d8c9] mt-2 drop-shadow-lg">{service.titleWord2}</span>
+                  </h2>
+
+                  <div className="flex gap-6 lg:gap-8 mb-12">
+                    {/* Gradient Divider (Rule 3) */}
+                    <div className="w-[2px] h-[120px] shrink-0" 
+                         style={{ background: 'linear-gradient(to bottom, #ffffff, #bb4413)' }}></div>
+                    
+                    {/* Description */}
+                    <div className="service-desc flex flex-col justify-center max-w-[280px]">
+                      <p className="text-[#f5f1eb] text-[12px] font-semibold tracking-[0.2em] uppercase mb-4 leading-relaxed opacity-90">
+                        {service.subtitle}
+                      </p>
+                      <p className="text-[#f5f1eb]/70 text-[15px] leading-relaxed font-medium drop-shadow-md">
+                        {service.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Icon Strip (Rule 5) */}
+                  <div className="flex flex-wrap gap-3">
+                    {service.icons.map((icon, i) => (
+                      <div key={i} className="service-icon group/chip flex items-center gap-2.5 rounded-full px-5 py-2.5 transition-all duration-300 cursor-default bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.1)] hover:bg-white hover:border-white">
+                        <div className="w-1.5 h-1.5 rounded-full border-2 border-[#bb4413] group-hover/chip:border-black transition-colors duration-300"></div>
+                        <span className="text-[#f5f1eb] group-hover/chip:text-black text-[11px] font-bold tracking-widest uppercase mt-[1px] transition-colors duration-300">{icon}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </section>
